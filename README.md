@@ -9,4 +9,5 @@ A simple test using the `libgdbm` library.
 
 ## To do
 
+- [ ] Report the error generated when `gdbm_netkey` gets the last key
 - [ ] Compile `libgdbm` statically
