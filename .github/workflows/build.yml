@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        operating-system: [ ubuntu-latest, windows-latest, macos-latest ]
+        operating-system: [ ubuntu-latest ]
         lazarus-versions: [ stable, 2.0.12, 2.0.10 ]
 
     steps:
@@ -25,6 +25,12 @@ jobs:
       with:
         submodules: true
 
+    - name: Install GDBM
+      if: ${{ matrix.operating-system == 'ubuntu-latest' }}
+      run: |
+        sudo apt update
+        sudo apt install libgdbm-dev -y
+
     - name: Install Lazarus
       uses: gcarreno/setup-lazarus@v3.0.16
       with:
@@ -32,39 +38,39 @@ jobs:
 
     - name: Build the Main App (Windows)
       if: ${{ matrix.operating-system == 'windows-latest' }}
-      run: lazbuild -B --bm=Release "src/testrestartapplication.lpi"
+      run: lazbuild -B --bm=Release "src/gnudbm.lpi"
 
     - name: Build the Main App GTK2 (Ubuntu)
       if: ${{ matrix.operating-system == 'ubuntu-latest' }}
       run: |
-        lazbuild -B --bm=Release "src/testrestartapplication.lpi"
-        mv bin/testrestartapplication bin/testrestartapplication-gtk2
+        lazbuild -B --bm=Release "src/gnudbm.lpi"
+        mv bin/gnudbm bin/gnudbm-gtk2
 
     - name: Build the Main App Qt5 (Ubuntu)
       if: ${{ matrix.operating-system == 'ubuntu-latest' }}
       run: |
         sudo apt update
         sudo apt install libqt5pas-dev -y
-        lazbuild -B --bm=Release --ws=qt5 "src/testrestartapplication.lpi"
-        mv bin/testrestartapplication bin/testrestartapplication-qt5
+        lazbuild -B --bm=Release --ws=qt5 "src/gnudbm.lpi"
+        mv bin/gnudbm bin/gnudbm-qt5
 
     - name: Build the Main App (macOS)
       if: ${{ matrix.operating-system == 'macos-latest' }}
-      run: lazbuild -B --bm=Release --ws=cocoa "src/testrestartapplication.lpi"
+      run: lazbuild -B --bm=Release --ws=cocoa "src/gnudbm.lpi"
 
     - name: Upload binary (Windows)
-      if: ${{ (matrix.operating-system == 'windows-latest')  &&  (matrix.lazarus-versions == 'stable') }}
+      if: ${{ (matrix.operating-system == 'windows-latest') ) }}
       uses: actions/upload-artifact@v2
       with:
-        name: testrestartapplication
-        path: bin/testrestartapplication.exe
+        name: gnudbm
+        path: bin/gnudbm.exe
 
     - name: Upload binary (Ubuntu)
-      if: ${{ (matrix.operating-system == 'ubuntu-latest')  &&  (matrix.lazarus-versions == 'stable') }}
+      if: ${{ (matrix.operating-system == 'ubuntu-latest') ) }}
       uses: actions/upload-artifact@v2
       with:
-        name: testrestartapplication
-        path: bin/testrestartapplication-*
+        name: gnudbm
+        path: bin/gnudbm-*
 
   package-release:
     if: contains(github.ref, '/tags/')
@@ -85,22 +91,21 @@ jobs:
       uses: actions/download-artifact@v2
 
     - name: List files
-      run: ls -alF testrestartapplication
+      run: ls -alF gnudbm
 
     - name: Create release files
       run: |
-        cd testrestartapplication
-        chmod +x testrestartapplication-*
-        zip -r testrestartapplication-${{ steps.vars.outputs.tag }}-x86_64-win64.zip testrestartapplication.exe
-        tar -zcvf testrestartapplication-GTK2-${{ steps.vars.outputs.tag }}-x86_64-linux.tar.gz testrestartapplication-gtk2
-        tar -zcvf testrestartapplication-Qt5-${{ steps.vars.outputs.tag }}-x86_64-linux.tar.gz testrestartapplication-qt5
+        cd gnudbm
+        chmod +x gnudbm-*
+        tar -zcvf gnudbm-GTK2-${{ steps.vars.outputs.tag }}-x86_64-linux.tar.gz gnudbm-gtk2
+        tar -zcvf gnudbm-Qt5-${{ steps.vars.outputs.tag }}-x86_64-linux.tar.gz gnudbm-qt5
     - name: Create GitHub release
       uses: softprops/action-gh-release@v1
       with:
         name: TestRestartApplication ${{ steps.vars.outputs.tag }}
         body_path: release-notes.md
         files: |
-          testrestartapplication/*.tar.gz
-          testrestartapplication/*.zip
+          gnudbm/*.tar.gz
+          gnudbm/*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
