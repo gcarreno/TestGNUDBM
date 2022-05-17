@@ -73,8 +73,15 @@ uses
 ;
 
 const
+  cDefaultFilename= 'gnudbm.dat';
+
   cChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWZYX0123456789';
   cEntryCount = 100;
+  cEntryPaging = 10;
+
+  cVersionMajor = 0;
+  cVersionMinor = 1;
+  cVersion = '0.1';
 
 {$R *.lfm}
 
@@ -149,7 +156,7 @@ begin
   try
     for index:=1 to cEntryCount do
     begin
-      if (index = 1) or (index mod 1000 = 0) then
+      if (index = 1) or (index mod cEntryPaging = 0) then
       begin
         memLog.Append(Format('Putting entry %s.',[FormatFloat(',0',index)]));
         Application.ProcessMessages;
@@ -187,7 +194,7 @@ begin
     begin
       Inc(index);
       value:= gdbm_fetch(FDB, key);
-      if (index = 1) or (index mod 1000 = 0) then
+      if (index = 1) or (index mod cEntryPaging = 0) then
       begin
         memLog.Append(Format('%s - %s: %s', [FormatFloat(',0',index), key, value]));
         Application.ProcessMessages;
@@ -198,6 +205,7 @@ begin
         on E: Exception do
         begin
           memLog.Append(Format('ERROR: %s', [E.Message]));
+          memLog.Append('Need to report this error triggered on the last entry');
           key:= '';
         end;
       end;
@@ -225,6 +233,9 @@ begin
   FDB:= nil;
   FInsertInProgress:= False;
   FInsertDone:= False;
+
+  Caption:= Format('Test GDBM v%s', [cVersion]);
+  edtDBFilename.Text:= cDefaultFilename;
 
   InitShortcuts;
 end;

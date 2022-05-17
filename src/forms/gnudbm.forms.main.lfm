@@ -43,7 +43,6 @@ object frmMain: TfrmMain
       BorderSpacing.Top = 4
       BorderSpacing.Right = 8
       TabOrder = 0
-      Text = './gdbm_test.dat'
     end
   end
   object panButtons: TPanel
