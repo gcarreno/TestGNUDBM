@@ -59,14 +59,14 @@ jobs:
       run: lazbuild -B --bm=Release --ws=cocoa "src/gnudbm.lpi"
 
     - name: Upload binary (Windows)
-      if: ${{ (matrix.operating-system == 'windows-latest') ) }}
+      if: ${{ (matrix.operating-system == 'windows-latest') }}
       uses: actions/upload-artifact@v2
       with:
         name: gnudbm
         path: bin/gnudbm.exe
 
     - name: Upload binary (Ubuntu)
-      if: ${{ (matrix.operating-system == 'ubuntu-latest') ) }}
+      if: ${{ (matrix.operating-system == 'ubuntu-latest') }}
       uses: actions/upload-artifact@v2
       with:
         name: gnudbm
