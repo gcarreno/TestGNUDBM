@@ -106,6 +106,5 @@ jobs:
         body_path: release-notes.md
         files: |
           gnudbm/*.tar.gz
-          gnudbm/*.zip
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
