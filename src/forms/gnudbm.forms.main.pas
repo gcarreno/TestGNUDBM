@@ -81,7 +81,7 @@ const
 
   cVersionMajor = 0;
   cVersionMinor = 1;
-  cVersionBuild = 1;
+  cVersionBuild = 2;
 
   cListAll = False;
 
