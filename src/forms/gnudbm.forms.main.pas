@@ -81,7 +81,9 @@ const
 
   cVersionMajor = 0;
   cVersionMinor = 1;
-  cVersion = '0.1';
+  cVersionBuild = 1;
+
+  cListAll = False;
 
 {$R *.lfm}
 
@@ -194,6 +196,12 @@ begin
     begin
       Inc(index);
       value:= gdbm_fetch(FDB, key);
+      if cListAll then
+      begin
+        memLog.Append(Format('%s - %s: %s', [FormatFloat(',0',index), key, value]));
+        Application.ProcessMessages;
+      end
+      else
       if (index = 1) or (index mod cEntryPaging = 0) then
       begin
         memLog.Append(Format('%s - %s: %s', [FormatFloat(',0',index), key, value]));
@@ -234,7 +242,7 @@ begin
   FInsertInProgress:= False;
   FInsertDone:= False;
 
-  Caption:= Format('Test GDBM v%s', [cVersion]);
+  Caption:= Format('Test GDBM v%d.%d.%d', [cVersionMajor, cVersionMinor, cVersionBuild]);
   edtDBFilename.Text:= cDefaultFilename;
 
   InitShortcuts;

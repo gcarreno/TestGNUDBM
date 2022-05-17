@@ -1,5 +1,3 @@
-# [2022-05-17] First Release v0.1
+# [2022-05-17] First Release v0.1.1
 
-- Creates a database
-- Inserts some entries
-- Lists the entries
+- List all or list with paging
